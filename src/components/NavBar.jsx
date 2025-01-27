@@ -59,6 +59,9 @@ const NavBar = () => {
                 <Link to="/premium">Premium</Link>
               </li>
               <li>
+                <Link to="/chat">Chat</Link>
+              </li>
+              <li>
                 <a onClick={handleLogout}>Logout</a>
               </li>
             </ul>
