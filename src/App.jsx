@@ -9,6 +9,7 @@ import appStore from "./utils/appStore";
 import Requests from "./components/Requests";
 import Premium from "./components/Premium";
 import Chat from "./components/Chat";
+import ChatList from "./components/ChatList";
 import LandingPage from "./components/LandingPage";
 import Signup from "./components/Signup";
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/connections" element={<Connections />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/premium" element={<Premium />} />
+          <Route path="/chat" element={<ChatList />} />
           <Route path="/chat/:targetUserId" element={<Chat />} />
         </Routes>
       </BrowserRouter>
