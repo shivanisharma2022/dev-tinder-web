@@ -11,9 +11,9 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get(BASE_URL + "/logout", {withCredentials: true});
-      dispatch(removeUser());   // remove user from redux
-      return navigate("/login"); // redirect to login page
+      await axios.get(BASE_URL + "/logout", { withCredentials: true });
+      dispatch(removeUser()); 
+      return navigate("/login"); 
     } catch (err) {
       console.log(err);
     }
@@ -28,7 +28,7 @@ const NavBar = () => {
       </div>
       {user && (
         <div className="flex-none gap-2">
-          <div className="form-control">Welcome, {user.data.firstName}</div>
+          <div className="form-control">Welcome, {user.firstName}</div>
           <div className="dropdown dropdown-end mx-5 flex">
             <div
               tabIndex={0}
@@ -36,7 +36,7 @@ const NavBar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img alt="user photo" src={user.data.imageUrl} />
+                <img alt="user photo" src={user.imageUrl} />
               </div>
             </div>
             <ul
@@ -71,4 +71,5 @@ const NavBar = () => {
     </div>
   );
 };
+
 export default NavBar;
