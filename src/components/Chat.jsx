@@ -68,19 +68,26 @@ const Chat = () => {
 
     const sendMessage = () => {
         if (!newMessage.trim()) return;
-
+    
         const socket = socketCreateConnection();
-        socket.emit('sendMessage', {
+        const newMsgObj = {
             firstName: user?.firstName,
             lastName: user?.lastName,
             userId,
             targetUserId,
             text: newMessage,
             imageUrl: user?.imageUrl
-        });
+        };
+    
+        // Emit message to server
+        socket.emit('sendMessage', newMsgObj);
+    
+        // **Update local state immediately**
+        setMessages((prevMessages) => [...prevMessages, newMsgObj]);
+    
+        // Clear the input field
         setNewMessage("");
     };
-
     return (
         <>
             <NavBar>

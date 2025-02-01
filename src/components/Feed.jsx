@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import UserCard from "./UserCard";
 import NavBar from "./NavBar"; 
 import Footer from "./Footer"; 
+
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
@@ -26,14 +27,15 @@ const Feed = () => {
     getFeed();
   }, []);
 
-  if (!feed) return null;
-  if (feed.length <= 0) return <h1 className="flex justify-center my-10">No Feed Found!</h1>;
-
   return (
     <>
       <NavBar />
       <div className="flex justify-center my-10">
-        <UserCard user={feed[0]} />
+        {feed && feed.length > 0 ? (
+          <UserCard user={feed[0]} />
+        ) : (
+          <h1 className="text-center text-xl font-semibold">No Feed Found!</h1>
+        )}
       </div>
       <Footer />
     </>
