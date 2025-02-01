@@ -2,28 +2,39 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch  = useDispatch();
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
-    }
+
     try {
-      const response = await axios.post(`${BASE_URL}/signup`, { firstName, lastName, email, password });
-      if (response.data.success) {
-        navigate("/login");
+      const response = await axios.post(`${BASE_URL}/signup`, {
+        firstName,
+        lastName,
+        email,
+        password,
+      },
+      { withCredentials: true } 
+    );
+
+      if (response.data.message === "User Added Successfully") { 
+        dispatch(addUser(response.data.data));
+
+        
+        navigate("/feed");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Signup Error:", err);
+      alert(err.response?.data?.error || "Signup failed. Please try again.");
     }
   };
 
@@ -70,7 +81,7 @@ const Signup = () => {
             required
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
             Password
           </label>
@@ -83,24 +94,8 @@ const Signup = () => {
             required
           />
         </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="input input-bordered w-full"
-            required
-          />
-        </div>
         <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            className="btn btn-primary"
-          >
+          <button type="submit" className="btn btn-primary">
             Signup
           </button>
         </div>
