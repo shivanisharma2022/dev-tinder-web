@@ -1,128 +1,105 @@
-import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { BASE_URL } from "../utils/constant";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
-  const [email, setEmailId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [isLoginForm, setIsLoginForm] = useState(true);
-  const [error, setError] = useState("");
-  const dispatch  = useDispatch();
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const res = await axios.post(
-        BASE_URL + "/login",
-        {
-          email: email,
-          password: password,
-        },
+      const response = await axios.post(
+        `${BASE_URL}/login`,
+        { email, password },
         { withCredentials: true }
       );
-      dispatch(addUser(res.data));
-      return navigate("/feed");
+      if (response.data.message === "Login Successful") {
+        dispatch(addUser(response.data.data));
+        navigate("/feed");
+      }
     } catch (err) {
-      console.log(err);
-      setError(err?.response?.data || "Something went wrong");
+      console.error("API call error:", err);
     }
   };
 
-  const handleSignup = async () => {
-    try {
-      const res = await axios.post(
-        BASE_URL + "/signup",
-        {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-        },
-        { withCredentials: true }
-      );
-      dispatch(addUser(res.data.data));
-      return navigate("/profile");
-    } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
-    }
+  const goToLandingPage = () => {
+    navigate("/"); 
+  };
+
+  const goToSignUp = () => {
+    navigate("/signup"); 
   };
 
   return (
-    <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title justify-center">
-            {isLoginForm ? "Login" : "Sign Up"}
-            </h2>
-          <div>
-         {!isLoginForm && ( 
-          <>
-          <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">First Name</span>
-              </div>
-              <input
-                type="text"
-                value={firstName}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </label>
-            <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">Last Name</span>
-              </div>
-              <input
-                type="text"
-                value={lastName}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </label>
-            </>
-         )
-}
-            <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">Email ID</span>
-              </div>
-              <input
-                type="text"
-                value={email}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setEmailId(e.target.value)}
-              />
-            </label>
-            <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">Password</span>
-              </div>
-              <input
-                type="password"
-                value={password}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-          </div>
-          <p className="text-red-500">{error}</p>
-          <div className="card-actions justify-center my-2">
-            <button className="btn btn-primary" onClick={isLoginForm ? handleLogin : handleSignup}>
-            {isLoginForm ? "Login" : "Sign Up"}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-3xl font-bold mb-8">Login</h1>
+      <form className="w-full max-w-sm" onSubmit={handleLogin}>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input input-bordered w-full"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div className="mb-6 relative">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input input-bordered w-full pr-10"
+              placeholder="Enter your password"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-2 flex items-center text-gray-500"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-
-          <p className="btn btn-secondary" onClick={() => setIsLoginForm((value) => !value)}>
-            {isLoginForm ? 
-          "Don't have an account? Sign Up Here" :
-           "Already have an account? Login Here"}
-           </p>
         </div>
+        <div className="flex items-center justify-between">
+          <button type="submit" className="btn btn-primary w-full">
+            Login
+          </button>
+        </div>
+      </form>
+
+      <div className="mt-8 w-full max-w-sm flex flex-col items-center gap-4">
+        <button
+          onClick={goToLandingPage}
+          className="btn btn-secondary w-full"
+        >
+          Back to Home
+        </button>
+        <button
+          onClick={goToSignUp}
+          className="btn btn-outline w-full"
+        >
+          Create an Account
+        </button>
       </div>
     </div>
   );
