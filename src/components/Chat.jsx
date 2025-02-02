@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { socketCreateConnection } from '../utils/socket';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
@@ -15,6 +15,9 @@ const Chat = () => {
 
     const user = useSelector(store => store.user);
     const userId = user?._id;
+
+    // Reference to scroll container
+    const chatContainerRef = useRef(null);
 
     // Fetch chat messages and target user info
     const fetchChatMessages = async () => {
@@ -66,6 +69,13 @@ const Chat = () => {
         };
     }, [userId, targetUserId]);
 
+    useEffect(() => {
+        // Scroll to bottom whenever the messages change
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
     const sendMessage = () => {
         if (!newMessage.trim()) return;
     
@@ -88,6 +98,7 @@ const Chat = () => {
         // Clear the input field
         setNewMessage("");
     };
+
     return (
         <>
             <NavBar>
@@ -107,14 +118,11 @@ const Chat = () => {
                     )}
                 </h1>
 
-                <div className='flex-1 overflow-scroll p-5'>
+                <div className='flex-1 overflow-scroll p-5' ref={chatContainerRef}>
                     {messages.map((msg, index) => (
                         <div key={index}
-                            className={'chat ' + (user?.firstName === msg.firstName ? "chat-end" : "chat-start")}
-                        >
-                            <div className="chat-header flex items-center gap-2">
-                                <img className="w-8 h-8 rounded-full" src={msg.imageUrl} alt="User" />
-                                <span>{`${msg.firstName} ${msg.lastName}`}</span>
+                            className={'chat ' + (user?.firstName === msg.firstName ? "chat-end" : "chat-start")}>
+                            <div className="chat-header flex items-center gap-2">            
                                 <time className="text-xs opacity-50">2 hours ago</time>
                             </div>
                             <div className="chat-bubble">{msg.text}</div>

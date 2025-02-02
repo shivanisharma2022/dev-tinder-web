@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-//import Body from "./components/Body";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Feed from "./components/Feed";
@@ -12,6 +11,7 @@ import Chat from "./components/Chat";
 import ChatList from "./components/ChatList";
 import LandingPage from "./components/LandingPage";
 import Signup from "./components/Signup";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   return (
@@ -23,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/edit" element={<EditProfile />} />
           <Route path="/connections" element={<Connections />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/premium" element={<Premium />} />

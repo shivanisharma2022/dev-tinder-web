@@ -12,29 +12,44 @@ const NavBar = () => {
   const handleLogout = async () => {
     try {
       await axios.get(BASE_URL + "/logout", { withCredentials: true });
-      dispatch(removeUser()); 
-      return navigate("/"); 
+      dispatch(removeUser());
+      return navigate("/");
     } catch (err) {
       console.log(err);
     }
   };
 
+  const navigateToFeed = () => {
+    navigate("/feed");
+  };
+
   return (
     <div className="navbar bg-base-300">
-      <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">
+      {/* Left side: devTinder logo and main navigation links */}
+      <div className="flex-1 flex items-center gap-2">
+        <Link 
+          to="/feed" 
+          onClick={navigateToFeed} 
+          className="btn btn-ghost text-xl cursor-pointer"
+        >
           👨‍💻 devTinder
         </Link>
+        <Link to="/connections" className="btn btn-ghost px-2">Connections</Link>
+        <Link to="/requests" className="btn btn-ghost px-2">Requests</Link>
+        <Link to="/premium" className="btn btn-ghost px-2">Premium</Link>
+        <Link to="/chat" className="btn btn-ghost px-2">Chat</Link>
       </div>
+
+      {/* Right side: Welcome message and user dropdown */}
       {user && (
-        <div className="flex-none gap-2">
-          <div className="form-control">Welcome, {user.firstName}</div>
-          <div className="dropdown dropdown-end mx-5 flex">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
+        <div className="flex-none gap-2 flex items-center">
+          <div className="form-control mr-2">
+            Welcome, {user.firstName}
+          </div>
+
+          {/* Dropdown for Profile, Feed, and Logout */}
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img alt="user photo" src={user.imageUrl} />
               </div>
@@ -44,22 +59,7 @@ const NavBar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               <li>
-                <Link to="/profile" className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/connections">Connections</Link>
-              </li>
-              <li>
-                <Link to="/requests">Requests</Link>
-              </li>
-              <li>
-                <Link to="/premium">Premium</Link>
-              </li>
-              <li>
-                <Link to="/chat">Chat</Link>
+                <Link to="/profile" className="justify-between">Profile</Link>
               </li>
               <li>
                 <Link to="/feed">Feed</Link>
