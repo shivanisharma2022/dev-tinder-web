@@ -10,6 +10,10 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -27,16 +31,38 @@ const Login = () => {
         navigate("/feed");
       }
     } catch (err) {
+      const errorMessage = err.response?.data?.message?.split(": ").pop() || "Invalid credentials";
+      setErrorMessage(errorMessage);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/forgotPassword`, {
+        email: forgotPasswordEmail,
+      });
+      if (response.data.message === "Password reset link sent") {
+        setForgotPasswordMessage("Password reset link has been sent to your email.");
+        setForgotPasswordEmail("");
+        setTimeout(() => {
+          setForgotPasswordMessage("");
+        }, 2000);
+      }
+    } catch (err) {
       console.error("API call error:", err);
+      setForgotPasswordMessage("Error sending password reset link.");
+      setTimeout(() => {
+        setForgotPasswordMessage("");
+      }, 2000);
     }
   };
 
   const goToLandingPage = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   const goToSignUp = () => {
-    navigate("/signup"); 
+    navigate("/signup");
   };
 
   return (
@@ -80,12 +106,57 @@ const Login = () => {
             </button>
           </div>
         </div>
+        {errorMessage && (
+          <div className="text-red-500 text-sm mb-4">
+            <p>{errorMessage}</p>
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <button type="submit" className="btn btn-primary w-full">
             Login
           </button>
         </div>
       </form>
+
+      <div className="mt-4 text-center">
+        <button
+          onClick={() => setShowForgotPasswordModal(true)}
+          className="text-sm text-blue-500 hover:underline"
+        >
+          Forgot your password?
+        </button>
+      </div>
+
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-md w-80">
+            <h2 className="text-lg font-bold mb-4">Forgot Password</h2>
+            <input
+              type="email"
+              value={forgotPasswordEmail}
+              onChange={(e) => setForgotPasswordEmail(e.target.value)}
+              className="input input-bordered w-full mb-4"
+              placeholder="Enter your email"
+              required
+            />
+            <button
+              onClick={handleForgotPassword}
+              className="btn btn-primary w-full"
+            >
+              Send email
+            </button>
+            {forgotPasswordMessage && (
+              <p className="mt-2 text-sm text-black">{forgotPasswordMessage}</p>
+            )}
+            <button
+              onClick={() => setShowForgotPasswordModal(false)}
+              className="btn btn-secondary w-full mt-4"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 w-full max-w-sm flex flex-col items-center gap-4">
         <button

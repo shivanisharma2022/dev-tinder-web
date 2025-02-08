@@ -14,8 +14,10 @@ import Signup from "./components/Signup";
 import EditProfile from "./components/EditProfile";
 import CompleteProfile from "./components/CompleteProfile";
 import ChangePassword from "./components/ChangePassword";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
+
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
@@ -33,6 +35,7 @@ function App() {
           <Route path="/chat" element={<ChatList />} />
           <Route path="/chat/:targetUserId" element={<Chat />} />
           <Route path="/changePassword" element={<ChangePassword />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </Provider>
