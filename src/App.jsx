@@ -13,6 +13,7 @@ import LandingPage from "./components/LandingPage";
 import Signup from "./components/Signup";
 import EditProfile from "./components/EditProfile";
 import CompleteProfile from "./components/CompleteProfile";
+import ChangePassword from "./components/ChangePassword";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/premium" element={<Premium />} />
           <Route path="/chat" element={<ChatList />} />
           <Route path="/chat/:targetUserId" element={<Chat />} />
+          <Route path="/changePassword" element={<ChangePassword />} />
         </Routes>
       </BrowserRouter>
     </Provider>
