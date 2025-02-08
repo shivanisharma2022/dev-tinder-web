@@ -10,6 +10,7 @@ const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); 
 
@@ -21,13 +22,13 @@ const Signup = () => {
     try {
       const response = await axios.post(
         `${BASE_URL}/signup`,
-        { firstName, lastName, email, password },
+        { firstName, lastName, email, phone, password },
         { withCredentials: true }
       );
 
       if (response.data.message === "User Added Successfully") {
         dispatch(addUser(response.data.data));
-        navigate("/feed");
+        navigate("/completeProfile");
       }
     } catch (err) {
       console.error("Signup Error:", err);
@@ -86,6 +87,20 @@ const Signup = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="input input-bordered w-full"
             placeholder="Enter your email"
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="input input-bordered w-full"
+            placeholder="Enter your phone number"
             required
           />
         </div>

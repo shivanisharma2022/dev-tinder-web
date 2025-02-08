@@ -12,6 +12,7 @@ import ChatList from "./components/ChatList";
 import LandingPage from "./components/LandingPage";
 import Signup from "./components/Signup";
 import EditProfile from "./components/EditProfile";
+import CompleteProfile from "./components/CompleteProfile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/feed" element={<Feed />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/completeProfile" element={<CompleteProfile />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/edit" element={<EditProfile />} />
           <Route path="/connections" element={<Connections />} />
