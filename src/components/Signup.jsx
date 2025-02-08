@@ -28,7 +28,7 @@ const Signup = () => {
 
       if (response.data.message === "User Added Successfully") {
         dispatch(addUser(response.data.data));
-        navigate("/completeProfile");
+        navigate("/sendOtp");
       }
     } catch (err) {
       console.error("Signup Error:", err);

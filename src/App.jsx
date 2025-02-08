@@ -15,6 +15,8 @@ import EditProfile from "./components/EditProfile";
 import CompleteProfile from "./components/CompleteProfile";
 import ChangePassword from "./components/ChangePassword";
 import ResetPassword from "./components/ResetPassword";
+import SendOtp from "./components/OtpSend";
+import VerifyOtp from "./components/OtpVerification";
 
 function App() {
 
@@ -36,6 +38,8 @@ function App() {
           <Route path="/chat/:targetUserId" element={<Chat />} />
           <Route path="/changePassword" element={<ChangePassword />} />
           <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/sendOtp" element={<SendOtp />} />
+          <Route path="/verifyOtp" element={<VerifyOtp />} />
         </Routes>
       </BrowserRouter>
     </Provider>
