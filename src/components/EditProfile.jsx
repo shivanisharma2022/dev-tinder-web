@@ -16,6 +16,7 @@ const EditProfile = () => {
   const [description, setDescription] = useState(user.description || "");
   const [imageUrl, setImageUrl] = useState(user.imageUrl || "");
   const [skills, setSkills] = useState(user.skills || []); 
+  const [phone, setPhone] = useState(user.phone || ""); // Added phone field
   const [err, setError] = useState("");
   const dispatch = useDispatch();
   const [showToast, setShowToast] = useState(false);
@@ -25,7 +26,7 @@ const EditProfile = () => {
     setError("");
     try {
       const res = await axios.patch(BASE_URL + "/profile/edit",
-        { firstName, lastName, age, gender, description, imageUrl, skills },
+        { firstName, lastName, age, gender, description, imageUrl, skills, phone }, // Included phone in request
         { withCredentials: true }
       );
       dispatch(addUser(res?.data?.data));
@@ -136,6 +137,17 @@ const EditProfile = () => {
                   value={imageUrl}
                   className="input input-bordered w-full mt-1"
                   onChange={(e) => setImageUrl(e.target.value)}
+                />
+              </label>
+
+              {/* Added Phone Number Field */}
+              <label className="block">
+                <span className="text-lg font-medium">Phone Number</span>
+                <input
+                  type="text"
+                  value={phone}
+                  className="input input-bordered w-full mt-1"
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </label>
             </div>

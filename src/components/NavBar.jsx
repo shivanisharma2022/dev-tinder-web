@@ -65,6 +65,9 @@ const NavBar = () => {
                 <Link to="/feed">Feed</Link>
               </li>
               <li>
+                <Link to="/changePassword">Change Password</Link>
+              </li>
+              <li>
                 <a onClick={handleLogout}>Logout</a>
               </li>
             </ul>

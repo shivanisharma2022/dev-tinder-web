@@ -26,6 +26,7 @@ const Profile = () => {
               <h2 className="text-3xl font-bold">{user.firstName + " " + user.lastName}</h2>
               <p className="text-lg text-gray-600">{user.email}</p>
               <p className="text-gray-500">{user.age} | {user.gender}</p>
+              <p className="text-gray-500">{user.phone}</p>
               <p className="italic text-gray-700 mt-2">{user.description}</p>
               
               <div className="mt-4">
@@ -44,7 +45,6 @@ const Profile = () => {
                   <span className="badge badge-outline">Free User</span>
                 )}
               </div>
-
 
               <div className="mt-6 text-center">
                 <button className="btn btn-secondary" onClick={() => navigate("/edit")}>
