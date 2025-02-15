@@ -2,9 +2,11 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useNavigate, useLocation } from "react-router-dom";
+import dotenv from "react-dotenv";
+dotenv.config();
 
-const BASIC_AUTH_USERNAME = "devTinder";
-const BASIC_AUTH_PASSWORD = "dev@tinder$4000";
+const BASIC_AUTH_USERNAME = dotenv.env.BASIC_AUTH_USERNAME
+const BASIC_AUTH_PASSWORD = dotenv.env.BASIC_AUTH_PASSWORD
 
 const EmailVerification = () => {
   const location = useLocation();
