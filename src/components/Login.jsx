@@ -4,7 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +13,7 @@ const Login = () => {
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // State to store error messages
+  const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -57,16 +57,17 @@ const Login = () => {
     }
   };
 
-  const goToLandingPage = () => {
-    navigate("/");
-  };
-
-  const goToSignUp = () => {
-    navigate("/signup");
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative w-full">
+      {/* Back Arrow */}
+      <button 
+        onClick={() => navigate(-1)} 
+        className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-gray-900"
+      >
+        <ArrowLeft size={24} />
+        <span className="ml-2 text-sm font-medium">Back</span>
+      </button>
+
       <h1 className="text-3xl font-bold mb-8">Login</h1>
       <form className="w-full max-w-sm" onSubmit={handleLogin}>
         <div className="mb-4">
@@ -160,13 +161,7 @@ const Login = () => {
 
       <div className="mt-8 w-full max-w-sm flex flex-col items-center gap-4">
         <button
-          onClick={goToLandingPage}
-          className="btn btn-secondary w-full"
-        >
-          Back to Home
-        </button>
-        <button
-          onClick={goToSignUp}
+          onClick={() => navigate("/signup")}
           className="btn btn-outline w-full"
         >
           Create an Account

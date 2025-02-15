@@ -4,7 +4,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { Eye, EyeOff } from "lucide-react"; 
+import { Eye, EyeOff, ArrowLeft } from "lucide-react"; 
 
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
@@ -36,16 +36,17 @@ const Signup = () => {
     }
   };
 
-  const goToLandingPage = () => {
-    navigate("/"); 
-  };
-
-  const goToLogin = () => {
-    navigate("/login"); 
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative w-full">
+      {/* Back Arrow */}
+      <button 
+        onClick={() => navigate(-1)} 
+        className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-gray-900"
+      >
+        <ArrowLeft size={24} />
+        <span className="ml-2 text-sm font-medium">Back</span>
+      </button>
+
       <h1 className="text-3xl font-bold mb-8 text-gray-800">Signup</h1>
       <form className="w-full max-w-sm" onSubmit={handleSignup}>
         <div className="mb-4">
@@ -136,13 +137,7 @@ const Signup = () => {
 
       <div className="mt-8 w-full max-w-sm flex flex-col items-center gap-4">
         <button
-          onClick={goToLandingPage}
-          className="btn w-full bg-gray-200 text-gray-800 hover:bg-gray-300"
-        >
-          Back to Home
-        </button>
-        <button
-          onClick={goToLogin}
+          onClick={() => navigate("/login")}
           className="btn w-full border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white"
         >
           Already have an account? Login
