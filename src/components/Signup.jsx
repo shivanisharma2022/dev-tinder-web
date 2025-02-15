@@ -6,6 +6,9 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react"; 
 
+const BASIC_AUTH_USERNAME = "devTinder";
+const BASIC_AUTH_PASSWORD = "dev@tinder$4000";
+
 const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -13,32 +16,48 @@ const Signup = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); 
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
+      const authHeader = `Basic ${btoa(`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`)}`;
+
       const response = await axios.post(
         `${BASE_URL}/signup`,
         { firstName, lastName, email, phone, password },
-        { withCredentials: true }
+        {
+          headers: {
+            "Authorization": authHeader,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
       );
 
       if (response.data.message === "User Added Successfully") {
+        localStorage.setItem("token", response.data.data.token);
+
         dispatch(addUser(response.data.data));
-        navigate("/sendOtp");
+        navigate("/sendOtpEmail");
       }
     } catch (err) {
       console.error("Signup Error:", err);
-      alert(err.response?.data?.error || "Signup failed. Please try again.");
+      if (err.response?.data.includes("E11000 duplicate key error")) {
+        setError("This email address is already associated with an account.");
+      } else {
+        setError(err.response?.data || "Signup failed. Please try again.");
+      }
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative w-full">
-      {/* Back Arrow */}
       <button 
         onClick={() => navigate(-1)} 
         className="absolute top-6 left-6 flex items-center text-gray-700 hover:text-gray-900"
@@ -48,6 +67,13 @@ const Signup = () => {
       </button>
 
       <h1 className="text-3xl font-bold mb-8 text-gray-800">Signup</h1>
+
+      {error && (
+        <div className="mb-4 text-red-600 bg-red-100 p-3 rounded w-full max-w-sm text-center">
+          {error}
+        </div>
+      )}
+
       <form className="w-full max-w-sm" onSubmit={handleSignup}>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
