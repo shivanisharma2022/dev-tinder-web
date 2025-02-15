@@ -11,28 +11,25 @@ const Chat = () => {
     const { targetUserId } = useParams();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [targetUser, setTargetUser] = useState(null); 
+    const [targetUser, setTargetUser] = useState(null);
 
     const user = useSelector(store => store.user);
     const userId = user?._id;
-
-    // Reference to scroll container
     const chatContainerRef = useRef(null);
+    const token = localStorage.getItem("token"); // Get JWT token from localStorage
 
-    // Fetch chat messages and target user info
     const fetchChatMessages = async () => {
         try {
             const response = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
-                withCredentials: true
+                withCredentials: true,
+                headers: {
+                    Authorization: `Bearer ${token}` // Attach the Bearer token
+                }
             });
 
-            console.log(response.data.messages);
-            
-            // Extract target user details from chat participants
             const target = response.data.participants.find(participant => participant._id !== userId);
             setTargetUser(target);
 
-            // Process messages
             const chatMessages = response?.data?.messages.map((msg) => {
                 const { senderId, text } = msg;
                 return {
@@ -60,7 +57,6 @@ const Chat = () => {
         socket.emit('joinChat', { firstName: user?.firstName, userId, targetUserId });
 
         socket.on('receiveMessage', ({ firstName, lastName, imageUrl, text }) => {
-            console.log(firstName + ' : ' + text);
             setMessages((messages) => [...messages, { firstName, lastName, imageUrl, text }]);
         });
 
@@ -70,7 +66,6 @@ const Chat = () => {
     }, [userId, targetUserId]);
 
     useEffect(() => {
-        // Scroll to bottom whenever the messages change
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
@@ -89,13 +84,8 @@ const Chat = () => {
             imageUrl: user?.imageUrl
         };
     
-        // Emit message to server
         socket.emit('sendMessage', newMsgObj);
-    
-        // **Update local state immediately**
         setMessages((prevMessages) => [...prevMessages, newMsgObj]);
-    
-        // Clear the input field
         setNewMessage("");
     };
 

@@ -13,13 +13,17 @@ const Connections = () => {
 
   const fetchConnections = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
+      const token = localStorage.getItem("token"); 
+
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
+        headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
+
       console.log("Fetched connections:", res.data.data);
       dispatch(addConnections(res.data.data));
     } catch (err) {
-      console.log(err);
+      console.log("Error fetching connections:", err);
     }
   };
 
@@ -53,7 +57,7 @@ const Connections = () => {
                   {age && gender && <p>{age + " " + gender}</p>}
                   <p>{description}</p>
                 </div>
-                <Link to={"/chat/" + _id}>
+                <Link to={`/chat/${_id}`}>
                   <button className="btn btn-primary">Chat</button>
                 </Link>
               </div>

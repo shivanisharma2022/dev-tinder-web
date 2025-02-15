@@ -14,7 +14,7 @@ const CompleteProfile = () => {
   const [description, setDescription] = useState("");
   const [skills, setSkills] = useState([]);
   const [error, setError] = useState("");
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -47,10 +47,17 @@ const CompleteProfile = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/completeProfile`,
+      const token = localStorage.getItem("token"); // Get JWT token from storage
+
+      const response = await axios.post(
+        `${BASE_URL}/completeProfile`,
         { gender, age, description, skills },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Attach Bearer token
+          withCredentials: true,
+        }
       );
+
       dispatch(addUser(response.data.data));
       navigate("/feed");
     } catch (err) {
@@ -116,7 +123,9 @@ const CompleteProfile = () => {
               />
             </label>
 
-            <button type="submit" className="btn btn-primary w-full">Save Profile</button>
+            <button type="submit" className="btn btn-primary w-full">
+              Save Profile
+            </button>
           </form>
         </div>
       </div>

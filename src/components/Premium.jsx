@@ -13,7 +13,9 @@ const Premium = () => {
 
   const verifyPremiumUser = async () => {
     try {
+      const token = localStorage.getItem("token");
       const res = await axios.get(BASE_URL + "/payment/verify", {
+        headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
       if (res.data.isPremium) {
@@ -26,10 +28,14 @@ const Premium = () => {
 
   const handleBuyClick = async (type) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         BASE_URL + "/payment/create",
         { membershipType: type },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
       );
 
       const { keyId, amount, currency, orderId, notes } = response.data || {};

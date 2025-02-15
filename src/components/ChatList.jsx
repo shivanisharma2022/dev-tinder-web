@@ -3,17 +3,21 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constant";
-import NavBar from "../components/NavBar"; // Import NavBar
-import Footer from "../components/Footer"; // Import Footer
+import NavBar from "../components/NavBar"; 
+import Footer from "../components/Footer"; 
 
 const ChatList = () => {
   const [chatList, setChatList] = useState([]);
-  const user = useSelector((store) => store.user); // Get user info
+  const user = useSelector((store) => store.user); 
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchChatList = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/chat/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           withCredentials: true,
         });
         setChatList(response.data);
@@ -23,7 +27,7 @@ const ChatList = () => {
     };
 
     fetchChatList();
-  }, []);
+  }, [token]);
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "";
@@ -47,7 +51,7 @@ const ChatList = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <NavBar /> {/* Updated NavBar with User Info */}
+      <NavBar />
       <div className="w-3/4 mx-auto mt-5 flex items-center gap-3">
         <h2 className="text-xl font-bold">Recent Chats</h2>
         {user && (
@@ -84,7 +88,7 @@ const ChatList = () => {
           ))
         )}
       </div>
-      <Footer /> {/* Footer added */}
+      <Footer />
     </div>
   );
 };
