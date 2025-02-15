@@ -6,12 +6,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 const BASIC_AUTH_USERNAME = "devTinder";
 const BASIC_AUTH_PASSWORD = "dev@tinder$4000";
 
-const OtpVerification = () => {
+const EmailVerification = () => {
   const location = useLocation();
-  const { phone, countryCode } = location.state || {};
+  const { email } = location.state || {};
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [isVerifying, setIsVerifying] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
@@ -32,8 +33,8 @@ const OtpVerification = () => {
     try {
       setIsVerifying(true);
       const response = await axios.post(
-        `${BASE_URL}/verifyOtp`,
-        { countryCode, phone, otp: otpCode },
+        `${BASE_URL}/verifyEmail`,
+        { email, otp: otpCode },
         {
           headers: {
             Authorization: authHeader,
@@ -44,7 +45,7 @@ const OtpVerification = () => {
       );
 
       setToastMessage({ type: "success", message: response.data.message });
-      navigate("/completeProfile");
+      navigate("/sendOtp");
     } catch (err) {
       setToastMessage({ type: "error", message: err?.response?.data?.message || "Failed to verify OTP" });
     } finally {
@@ -52,15 +53,34 @@ const OtpVerification = () => {
     }
   };
 
-  const handleResendOtp = () => {
-    navigate("/resendOtp", { state: { phone, countryCode } });
+  const handleResendOtp = async () => {
+    try {
+      setIsResending(true);
+      await axios.post(
+        `${BASE_URL}/resendOtp`,
+        { email },
+        {
+          headers: {
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      setToastMessage({ type: "success", message: "OTP resent successfully!" });
+    } catch (err) {
+      setToastMessage({ type: "error", message: err?.response?.data?.message || "Failed to resend OTP" });
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600">
       <div className="w-full max-w-sm bg-white p-8 rounded-xl shadow-lg transform transition-all hover:scale-105 duration-300">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-4">Enter Your Code</h2>
-        <p className="text-center mb-6 text-gray-600">A code has been sent to {countryCode} {phone}</p>
+        <p className="text-center mb-6 text-gray-600">A code has been sent to {email}</p>
 
         <div className="grid grid-cols-6 gap-4 mb-6">
           {otp.map((digit, index) => (
@@ -99,9 +119,10 @@ const OtpVerification = () => {
             Didn&apos;t receive a code?{" "}
             <button
               onClick={handleResendOtp}
+              disabled={isResending}
               className="text-blue-600 hover:underline"
             >
-              Resend
+              {isResending ? "Resending..." : "Resend"}
             </button>
           </p>
         </div>
@@ -110,4 +131,4 @@ const OtpVerification = () => {
   );
 };
 
-export default OtpVerification;
+export default EmailVerification;
