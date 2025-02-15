@@ -5,17 +5,20 @@ import { BASE_URL } from "../utils/constant";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import dotenv from "react-dotenv";
-dotenv.config();
 
-const BASIC_AUTH_USERNAME = dotenv.env.BASIC_AUTH_USERNAME
-const BASIC_AUTH_PASSWORD = dotenv.env.BASIC_AUTH_PASSWORD
+const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
+const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Forgot Password States
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,7 +28,6 @@ const Login = () => {
     setErrorMessage("");
 
     try {
-      
       const authHeader = `Basic ${btoa(`${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}`)}`;
 
       const response = await axios.post(
@@ -41,14 +43,15 @@ const Login = () => {
       );
 
       if (response.data.message === "Login Successful") {
-        const { token, data } = response.data.data;
+        const { token, data } = response.data;
         localStorage.setItem("authToken", token);
+        const userData = data.data;
 
         dispatch(addUser(data));
 
-        if (!data.phoneVerify.isVerified) {
+        if (userData?.phoneVerify?.isVerified === false) {
           navigate("/sendOtp");
-        } else if (!data.isProfileCompleted) {
+        } else if (userData?.isProfileCompleted === false) {
           navigate("/completeProfile");
         } else {
           navigate("/feed");
@@ -59,6 +62,29 @@ const Login = () => {
       setErrorMessage(err.response?.data || "Invalid credentials. Please try again.");
     }
   };
+
+  // Handle Forgot Password
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/forgotPassword`, {
+        email: forgotPasswordEmail,
+      });
+      if (response.data.message === "Password reset link sent") {
+        setForgotPasswordMessage("Password reset link has been sent to your email.");
+        setForgotPasswordEmail("");
+        setTimeout(() => {
+          setForgotPasswordMessage("");
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("API call error:", err);
+      setForgotPasswordMessage("Error sending password reset link.");
+      setTimeout(() => {
+        setForgotPasswordMessage("");
+      }, 2000);
+    }
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 relative w-full">
@@ -78,7 +104,7 @@ const Login = () => {
         </div>
       )}
 
-      <form className="w-full max-w-sm" onSubmit={handleLogin}>
+<form className="w-full max-w-sm" onSubmit={handleLogin}>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
             Email
@@ -116,12 +142,57 @@ const Login = () => {
             </button>
           </div>
         </div>
+        {errorMessage && (
+          <div className="text-red-500 text-sm mb-4">
+            <p>{errorMessage}</p>
+          </div>
+        )}
         <div className="flex items-center justify-between">
-          <button type="submit" className="btn w-full bg-blue-600 text-white hover:bg-blue-700">
+          <button type="submit" className="btn btn-primary w-full">
             Login
           </button>
         </div>
       </form>
+
+      <div className="mt-4 text-center">
+        <button
+          onClick={() => setShowForgotPasswordModal(true)}
+          className="text-sm text-blue-500 hover:underline"
+        >
+          Forgot your password?
+        </button>
+      </div>
+
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-md w-80">
+            <h2 className="text-lg font-bold mb-4">Forgot Password</h2>
+            <input
+              type="email"
+              value={forgotPasswordEmail}
+              onChange={(e) => setForgotPasswordEmail(e.target.value)}
+              className="input input-bordered w-full mb-4"
+              placeholder="Enter your email"
+              required
+            />
+            <button
+              onClick={handleForgotPassword}
+              className="btn btn-primary w-full"
+            >
+              Send email
+            </button>
+            {forgotPasswordMessage && (
+              <p className="mt-2 text-sm text-black">{forgotPasswordMessage}</p>
+            )}
+            <button
+              onClick={() => setShowForgotPasswordModal(false)}
+              className="btn btn-secondary w-full mt-4"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-8 w-full max-w-sm flex flex-col items-center gap-4">
         <button

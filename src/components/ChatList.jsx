@@ -9,14 +9,14 @@ import Footer from "../components/Footer";
 const ChatList = () => {
   const [chatList, setChatList] = useState([]);
   const user = useSelector((store) => store.user); 
-  const token = localStorage.getItem("token");
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   useEffect(() => {
     const fetchChatList = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/chat/list`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${tokenFromRedux}`,
           },
           withCredentials: true,
         });
@@ -27,7 +27,7 @@ const ChatList = () => {
     };
 
     fetchChatList();
-  }, [token]);
+  }, [tokenFromRedux]);
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "";

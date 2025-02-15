@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
@@ -14,8 +15,7 @@ const ChangePassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("token");
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ const ChangePassword = () => {
         {
           withCredentials: true,
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${tokenFromRedux}`,
           },
         }
       );

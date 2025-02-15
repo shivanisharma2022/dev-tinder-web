@@ -8,11 +8,15 @@ const NavBar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const tokenFromRedux = useSelector((store) => store.user.token);
+
 
   const handleLogout = async () => {
     try {
-      await axios.get(BASE_URL + "/logout", { withCredentials: true });
-      localStorage.removeItem("token");
+      await axios.post(BASE_URL + "/logout", {}, { 
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
+        withCredentials: true,
+      });
       dispatch(removeUser());
       await navigate("/");
     } catch (err) {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
@@ -17,6 +17,7 @@ const CompleteProfile = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
@@ -47,13 +48,11 @@ const CompleteProfile = () => {
     }
 
     try {
-      const token = localStorage.getItem("token"); // Get JWT token from storage
-
       const response = await axios.post(
         `${BASE_URL}/completeProfile`,
         { gender, age, description, skills },
         {
-          headers: { Authorization: `Bearer ${token}` }, // Attach Bearer token
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
           withCredentials: true,
         }
       );

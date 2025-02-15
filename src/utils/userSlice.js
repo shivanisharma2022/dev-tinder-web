@@ -1,17 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+    token: null,
+    isPremium: false,
+    membershipType: null,
+    // other user fields...
+};
+
 const userSlice = createSlice({
-  name: "user",
-  initialState: null,
-  reducers: {
-    addUser: (state, action) => {
-      return action.payload;
+    name: "user",
+    initialState,
+    reducers: {
+        addUser: (state, action) => {
+            return { ...state, ...action.payload };
+        },
+        removeUser: (state, action) => {
+          return null;
+        },
+        updateUser: (state, action) => {
+            state.isPremium = action.payload.isPremium;
+            state.membershipType = action.payload.membershipType;
+        },
     },
-    removeUser: (state, action) => {
-      return null;
-    },
-  },
 });
 
-export const { addUser, removeUser } = userSlice.actions;
+export const { addUser, removeUser,updateUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,60 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import NavBar from './NavBar'; 
-import Footer from './Footer'; 
+import NavBar from "./NavBar";
+import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const user = useSelector((state) => state.user);
-  const [firstName, setFirstName] = useState(user.firstName || "");
-  const [lastName, setLastName] = useState(user.lastName || "");
-  const [age, setAge] = useState(user.age || "");
-  const [gender, setGender] = useState(user.gender || "");
-  const [description, setDescription] = useState(user.description || "");
-  const [imageUrl, setImageUrl] = useState(user.imageUrl || "");
-  const [skills, setSkills] = useState(user.skills || []); 
-  const [phone, setPhone] = useState(user.phone || "");
-  const [err, setError] = useState("");
   const dispatch = useDispatch();
-  const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
+  // State for user details (initialized as empty)
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [skills, setSkills] = useState([]);
+  const [phone, setPhone] = useState("");
+  const [err, setError] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  // ✅ Use useEffect to prefill fields when Redux user data loads
+  useEffect(() => {
+    if (user) {
+      setFirstName(user.data.firstName || "");
+      setLastName(user.data.lastName || "");
+      setAge(user.data.age || "");
+      setGender(user.data.gender || "");
+      setDescription(user.data.description || "");
+      setImageUrl(user.data.imageUrl || "");
+      setSkills(user.data.skills || []);
+      setPhone(user.data.phone || "");
+    }
+  }, [user]); // Runs when 'user' changes
+
+  // ✅ Save profile function
   const saveProfile = async () => {
     setError("");
     try {
-      const token = localStorage.getItem("token");
-      
       const res = await axios.patch(
         `${BASE_URL}/profile/edit`,
-        { firstName, lastName, age, gender, description, imageUrl, skills, phone }, 
+        { firstName, lastName, age: Number(age), gender, description, imageUrl, skills, phone },
         {
-          headers: { Authorization: `Bearer ${token}` }, 
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
           withCredentials: true,
         }
       );
-      
+
       dispatch(addUser(res?.data?.data));
       setShowToast(true);
 
       window.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
 
       setTimeout(() => {
         setShowToast(false);
-        navigate("/profile"); 
+        navigate("/profile");
       }, 3000);
     } catch (error) {
       setError(error?.response?.data || "Something went wrong");
     }
   };
 
+  // ✅ Handle skill input change
   const handleSkillChange = (e) => {
-    setSkills(e.target.value.split(",").map(skill => skill.trim()));
+    setSkills(e.target.value.split(",").map((skill) => skill.trim()));
   };
 
   return (
@@ -62,14 +79,13 @@ const EditProfile = () => {
       <NavBar />
       <div className="flex flex-col justify-between items-center min-h-screen bg-base-200 px-4 py-6">
         <div className="w-full max-w-xl bg-base-300 shadow-lg rounded-lg p-8 mb-20 space-y-8">
-          
           <h2 className="text-3xl font-bold text-center mb-8">Edit Profile</h2>
 
           <div className="flex justify-center mb-6">
             <img
               src={imageUrl || "https://via.placeholder.com/150"}
               alt="Profile"
-              className="rounded-full w-36 h-36 object-cover" 
+              className="rounded-full w-36 h-36 object-cover"
             />
           </div>
 
@@ -160,7 +176,9 @@ const EditProfile = () => {
           </div>
 
           <div className="text-center mt-6">
-            <button className="btn btn-primary w-full max-w-xs" onClick={saveProfile}>Save Profile</button>
+            <button className="btn btn-primary w-full max-w-xs" onClick={saveProfile}>
+              Save Profile
+            </button>
           </div>
         </div>
 

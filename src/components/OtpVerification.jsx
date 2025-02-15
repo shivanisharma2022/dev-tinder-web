@@ -2,11 +2,8 @@ import { useState, useRef } from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useNavigate, useLocation } from "react-router-dom";
-import dotenv from "react-dotenv";
-dotenv.config();
-
-const BASIC_AUTH_USERNAME = dotenv.env.BASIC_AUTH_USERNAME
-const BASIC_AUTH_PASSWORD = dotenv.env.BASIC_AUTH_PASSWORD
+const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
+const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
 
 const OtpVerification = () => {
   const location = useLocation();

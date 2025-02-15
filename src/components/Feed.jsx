@@ -4,26 +4,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
 import { useEffect } from "react";
 import UserCard from "./UserCard";
-import NavBar from "./NavBar"; 
-import Footer from "./Footer"; 
+import NavBar from "./NavBar";
+import Footer from "./Footer";
 
 const Feed = () => {
   const feed = useSelector((store) => store.feed);
   const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
+
 
   const getFeed = async () => {
     if (feed) return;
     try {
-      const token = localStorage.getItem("token");
-      
       const res = await axios.get(BASE_URL + "/feed", {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
         withCredentials: true,
-      }); 
+      });
+
 
       dispatch(addFeed(res?.data?.data.data));
     } catch (err) {
-      console.error("Error fetching feed:", err); 
+      console.error("Error fetching feed:", err);
     }
   };
 

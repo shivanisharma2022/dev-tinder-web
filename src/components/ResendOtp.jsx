@@ -2,12 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
-import dotenv from "react-dotenv";
-dotenv.config();
-
-const BASIC_AUTH_USERNAME = dotenv.env.BASIC_AUTH_USERNAME
-const BASIC_AUTH_PASSWORD = dotenv.env.BASIC_AUTH_PASSWORD
-
+const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
+const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
 const ResendOtp = () => {
   const [countryCode, setCountryCode] = useState("+91");
   const [phone, setPhone] = useState("");

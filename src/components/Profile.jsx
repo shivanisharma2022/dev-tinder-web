@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +9,12 @@ import Footer from "./Footer";
 const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const tokenFromRedux = useSelector((store) => store.user.token);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/profile/view`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
           withCredentials: true,
         });
         setUser(res.data);

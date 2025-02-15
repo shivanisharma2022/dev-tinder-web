@@ -12,18 +12,17 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [targetUser, setTargetUser] = useState(null);
+    const tokenFromRedux = useSelector((store) => store.user.token);
 
     const user = useSelector(store => store.user);
     const userId = user?._id;
     const chatContainerRef = useRef(null);
-    const token = localStorage.getItem("token"); // Get JWT token from localStorage
-
     const fetchChatMessages = async () => {
         try {
             const response = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
                 withCredentials: true,
                 headers: {
-                    Authorization: `Bearer ${token}` // Attach the Bearer token
+                    Authorization: `Bearer ${tokenFromRedux}`
                 }
             });
 

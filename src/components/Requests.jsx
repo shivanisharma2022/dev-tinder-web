@@ -9,14 +9,14 @@ import Footer from "./Footer";
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
-  const token = localStorage.getItem("token");
+  const tokenFromRedux = useSelector((store) => store.user.token);
   const reviewRequests = async (status, _id) => {
     try {
       await axios.post(
         `${BASE_URL}/request/review/${status}/${_id}`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
           withCredentials: true,
         }
       );
@@ -29,7 +29,7 @@ const Requests = () => {
   const fetchRequests = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/user/requests/received`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
         withCredentials: true,
       });
       dispatch(addRequests(res.data.data));

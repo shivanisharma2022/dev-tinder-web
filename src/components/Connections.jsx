@@ -10,13 +10,12 @@ import Footer from "./Footer";
 const Connections = () => {
   const connections = useSelector((store) => store.connections);
   const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const fetchConnections = async () => {
     try {
-      const token = localStorage.getItem("token"); 
-
       const res = await axios.get(`${BASE_URL}/user/connections`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
         withCredentials: true,
       });
 
