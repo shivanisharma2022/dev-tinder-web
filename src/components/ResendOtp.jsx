@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../utils/constant";
-const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
-const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
-const ResendOtp = () => {
+import { BASE_URL, BASIC_AUTH_USERNAME, BASIC_AUTH_PASSWORD } from "../utils/constant";const ResendOtp = () => {
   const [countryCode, setCountryCode] = useState("+91");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();

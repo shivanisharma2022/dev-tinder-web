@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
 import axios from "axios";
-import { BASE_URL } from "../utils/constant";
+import { BASE_URL, BASIC_AUTH_USERNAME, BASIC_AUTH_PASSWORD } from "../utils/constant";
 import { useNavigate, useLocation } from "react-router-dom";
-const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
-const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
-
+// const BASIC_AUTH_USERNAME = import.meta.env.VITE_BASIC_AUTH_USERNAME;
+// const BASIC_AUTH_PASSWORD = import.meta.env.VITE_BASIC_AUTH_PASSWORD;
 const EmailVerification = () => {
   const location = useLocation();
   const { email } = location.state || {};

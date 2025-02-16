@@ -14,7 +14,7 @@ const Chat = () => {
     const [targetUser, setTargetUser] = useState(null);
     const tokenFromRedux = useSelector((store) => store.user.token);
 
-    const user = useSelector(store => store.user);
+    const user = useSelector(store => store.user.data);
     const userId = user?._id;
     const chatContainerRef = useRef(null);
     const fetchChatMessages = async () => {

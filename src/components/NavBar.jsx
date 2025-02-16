@@ -5,7 +5,7 @@ import { BASE_URL } from "../utils/constant";
 import { removeUser } from "../utils/userSlice";
 
 const NavBar = () => {
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const tokenFromRedux = useSelector((store) => store.user.token);

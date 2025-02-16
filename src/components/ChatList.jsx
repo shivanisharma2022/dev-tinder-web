@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 
 const ChatList = () => {
   const [chatList, setChatList] = useState([]);
-  const user = useSelector((store) => store.user); 
+  const user = useSelector((store) => store.user.data); 
   const tokenFromRedux = useSelector((store) => store.user.token);
 
   useEffect(() => {
