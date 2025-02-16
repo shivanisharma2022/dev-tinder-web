@@ -7,7 +7,8 @@ import Footer from "./Footer";
 import { updateUser } from "../utils/userSlice";
 
 const Premium = () => {
-  const [isUserPremium, setIsUserPremium] = useState(false);
+  const [isUserPremium, setIsUserPremium] = useState(null);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const tokenFromRedux = useSelector((store) => store.user.token);
 
@@ -24,12 +25,18 @@ const Premium = () => {
       if (res.data.isPremium) {
         setIsUserPremium(true);
         dispatch(updateUser({ isPremium: true, membershipType: res.data.membershipType }));
-    }
+      } else {
+        setIsUserPremium(false);
+      }
     } catch (error) {
       console.error("Error verifying premium status:", error);
+      setIsUserPremium(false);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000); 
     }
   };
-
   const handleBuyClick = async (type) => {
     try {
       const response = await axios.post(
@@ -75,7 +82,9 @@ const Premium = () => {
     <>
       <NavBar />
       <div className="m-10">
-        {isUserPremium ? (
+        {loading ? (
+          <h1 className="text-center text-2xl font-bold">Loading...</h1>
+        ) : isUserPremium ? (
           <h1 className="text-center text-2xl font-bold">
             You are already a premium user
           </h1>
