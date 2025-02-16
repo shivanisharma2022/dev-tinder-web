@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
 import { Eye, EyeOff } from "lucide-react";
+import Footer from "./Footer";
+import NavBar from "./NavBar";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -12,8 +14,8 @@ const ChangePassword = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const user = useSelector((store) => store.user);
   const navigate = useNavigate();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +28,12 @@ const ChangePassword = () => {
       const response = await axios.post(
         BASE_URL + "/changePassword",
         { oldPassword, newPassword, confirmPassword },
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${tokenFromRedux}`,
+          },
+        }
       );
 
       if (response.status === 200 && response.data.message === "Password changed successfully") {
@@ -44,6 +51,7 @@ const ChangePassword = () => {
 
   return (
     <>
+     <NavBar />
       <div className="flex-grow flex justify-center items-start my-10 px-2">
         <div className="card w-full max-w-2xl bg-base-100 shadow-xl p-6">
           <h2 className="text-3xl font-bold text-center mb-6">Change Your Password</h2>
@@ -127,6 +135,7 @@ const ChangePassword = () => {
           </div>
         </div>
       )}
+      <Footer />
     </>
   );
 };

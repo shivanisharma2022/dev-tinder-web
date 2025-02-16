@@ -17,6 +17,10 @@ import ChangePassword from "./components/ChangePassword";
 import ResetPassword from "./components/ResetPassword";
 import SendOtp from "./components/OtpSend";
 import VerifyOtp from "./components/OtpVerification";
+import SendOtpEmail from "./components/OtpEmail";
+import EmailVerification from "./components/EmailVerification";
+import ResendOtp from "./components/ResendOtp";
+import ResendOtpEmail from "./components/ResendOtpEmail";
 
 function App() {
 
@@ -40,6 +44,10 @@ function App() {
           <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/sendOtp" element={<SendOtp />} />
           <Route path="/verifyOtp" element={<VerifyOtp />} />
+          <Route path="/sendOtpEmail" element={<SendOtpEmail />} />
+          <Route path="/verifyEmail" element={<EmailVerification />} />
+          <Route path="/resendOtp" element={<ResendOtp />} />
+          <Route path="/resendOtpEmail" element={<ResendOtpEmail />} />
         </Routes>
       </BrowserRouter>
     </Provider>

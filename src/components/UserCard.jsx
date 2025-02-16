@@ -1,18 +1,22 @@
 import axios from 'axios';
 import { BASE_URL } from "../utils/constant";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeUserFromFeed } from '../utils/feedSlice';
 
 const UserCard = ({ user }) => {
   const { _id, firstName, lastName, age, gender, description, imageUrl } = user;
   const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const handleSendRequest = async (status, userId) => {
     try {
       const res = await axios.post(
         BASE_URL + "/request/send/" + status + "/" + userId,
         {},
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
+          withCredentials: true
+        }
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {

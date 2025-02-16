@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../utils/constant";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
@@ -14,9 +14,10 @@ const CompleteProfile = () => {
   const [description, setDescription] = useState("");
   const [skills, setSkills] = useState([]);
   const [error, setError] = useState("");
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
@@ -47,10 +48,15 @@ const CompleteProfile = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/completeProfile`,
+      const response = await axios.post(
+        `${BASE_URL}/completeProfile`,
         { gender, age, description, skills },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
+          withCredentials: true,
+        }
       );
+
       dispatch(addUser(response.data.data));
       navigate("/feed");
     } catch (err) {
@@ -116,7 +122,9 @@ const CompleteProfile = () => {
               />
             </label>
 
-            <button type="submit" className="btn btn-primary w-full">Save Profile</button>
+            <button type="submit" className="btn btn-primary w-full">
+              Save Profile
+            </button>
           </form>
         </div>
       </div>

@@ -1,11 +1,15 @@
 import { BASE_URL } from "../utils/constant";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import { updateUser } from "../utils/userSlice";
 
 const Premium = () => {
   const [isUserPremium, setIsUserPremium] = useState(false);
+  const dispatch = useDispatch();
+  const tokenFromRedux = useSelector((store) => store.user.token);
 
   useEffect(() => {
     verifyPremiumUser();
@@ -13,12 +17,14 @@ const Premium = () => {
 
   const verifyPremiumUser = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/payment/verify", {
+      const res = await axios.get(BASE_URL + "/premium/verify", {
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
         withCredentials: true,
       });
       if (res.data.isPremium) {
         setIsUserPremium(true);
-      }
+        dispatch(updateUser({ isPremium: true, membershipType: res.data.membershipType }));
+    }
     } catch (error) {
       console.error("Error verifying premium status:", error);
     }
@@ -29,7 +35,10 @@ const Premium = () => {
       const response = await axios.post(
         BASE_URL + "/payment/create",
         { membershipType: type },
-        { withCredentials: true }
+        {
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
+          withCredentials: true,
+        }
       );
 
       const { keyId, amount, currency, orderId, notes } = response.data || {};

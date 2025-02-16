@@ -8,3 +8,6 @@
 
 export const BASE_URL = 
 location.hostName === 'localhost' ? 'http://localhost:4000' : '/api';
+
+export const BASIC_AUTH_USERNAME = 'devTinder';
+export const BASIC_AUTH_PASSWORD = 'dev@tinder$4000';

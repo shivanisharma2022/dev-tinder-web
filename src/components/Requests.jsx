@@ -9,22 +9,32 @@ import Footer from "./Footer";
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
   const dispatch = useDispatch();
-  
+  const tokenFromRedux = useSelector((store) => store.user.token);
   const reviewRequests = async (status, _id) => {
     try {
-      await axios.post(BASE_URL + "/request/review/" + status + "/" + _id, {}, { withCredentials: true });
+      await axios.post(
+        `${BASE_URL}/request/review/${status}/${_id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${tokenFromRedux}` },
+          withCredentials: true,
+        }
+      );
       dispatch(removeRequest(_id));
     } catch (err) {
-      console.log(err);
+      console.error("Error reviewing request:", err);
     }
   };
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", { withCredentials: true });
+      const res = await axios.get(`${BASE_URL}/user/requests/received`, {
+        headers: { Authorization: `Bearer ${tokenFromRedux}` },
+        withCredentials: true,
+      });
       dispatch(addRequests(res.data.data));
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching requests:", err);
     }
   };
 
